@@ -1,0 +1,16 @@
+<script lang="ts">
+    import {currentUser, pb} from "./pocketbase";
+
+    async function login() {
+        await pb.collection("users").authWithOAuth2({provider:"discord",scopes: ["identify"]});
+    }
+    async function logout() {
+        pb.authStore.clear();
+    }
+</script>
+
+{#if $currentUser}
+    <button class="rounded-2xl bg-red-500 px-4 py-2 text-white " on:click={logout}>{$currentUser.username} abmelden</button>
+{:else}
+    <button class="rounded-2xl bg-blue-500 px-4 py-2 text-white" on:click={login}>Mit Discord anmelden</button>
+{/if}
