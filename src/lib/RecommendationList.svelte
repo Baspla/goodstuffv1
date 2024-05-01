@@ -13,8 +13,9 @@
 
     let loadMoreButton: any;
 
-    onMount(async () =>{
+    let page = 0;
 
+    onMount(async () =>{
         loadMoreButton = document.getElementById('loadMore');
         //await loadPosts();
         unsubscribe = await pb
@@ -50,8 +51,6 @@
         loadPosts();
         })
 
-    let page = 1;
-
     function getSort() {
         if ($order === 'newest') {
             return '-created';
@@ -67,7 +66,8 @@
 
     async function loadPosts() {
         console.log('loading posts', $topic);
-        loadMoreButton.style.display = 'block';
+        if(loadMoreButton)
+            loadMoreButton.style.display = 'block';
         let sort = getSort();
         page = 0;
         if ($topic == "all"){

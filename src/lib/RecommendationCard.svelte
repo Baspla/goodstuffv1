@@ -170,7 +170,7 @@
                     <p class="px-4 text-gray-600 dark:text-slate-200 pb-2">{description}</p>
                 {/if}
                 {#if image_url}
-                    <div class="flex flex-row justify-center">
+                    <div class="flex flex-row justify-center dark:text-slate-200">
                         <img src={image_url} alt="Das Bild konnte nicht geladen werden" class="px-2 py-1 h-max object-contain max-h-96" on:click={fullscreen}/>
                     </div>
                 {/if}
