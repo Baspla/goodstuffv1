@@ -3,6 +3,7 @@
     import {topic, fullscreenImage, topic_color} from "./stores";
     import Time from "svelte-time";
     import {getTextColor} from "./colors";
+    import {beforeUpdate} from "svelte";
     export let id:string;
     export let author;
     export let title: string;
@@ -22,13 +23,17 @@
 
     let userLiked = false;
     let userLikeId:any = null;
-    for(let i = 0; i < likes.length; i++) {
-        if(likes[i].user === $currentUser?.id) {
-            userLiked = true;
-            userLikeId = likes[i].id;
-            break;
+
+    beforeUpdate(() => {
+        for(let i = 0; i < likes.length; i++) {
+            if(likes[i].user === $currentUser?.id) {
+                userLiked = true;
+                userLikeId = likes[i].id;
+                break;
+            }
         }
-    }
+    });
+
 
     async function changeLike(){
         if(userLiked) {
