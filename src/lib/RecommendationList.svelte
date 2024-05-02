@@ -1,157 +1,40 @@
 <script lang="ts">
     import RecommendationCard from "./RecommendationCard.svelte";
-    import {onMount, onDestroy} from "svelte";
-    import {pb} from "./pocketbase";
     import {order, topic} from "./stores";
     import CreateCard from "./CreateCard.svelte";
+    import {loadMorePosts, posts} from "./posts";
 
-    let posts:any = [];
-    let unsubscribe: () => void;
-    let newPost: string;
+    const SCROLL_TRIGGER_DISTANCE = 300;
 
-    const AMOUNT_PER_LOAD = 50;
-
-    let loadMoreButton: any;
-
-    let page = 1;
-
-    onMount(async () =>{
-        loadMoreButton = document.getElementById('loadMore');
-        //await loadPosts();
-        unsubscribe = await pb
-            .collection('posts')
-            .subscribe('*', async ({ action, record }) => {
-                if (record.topic !== $topic && 'all' !== $topic) {
-                    return;
-                }
-                if (action === 'create') {
-                    if($order === 'oldest')
-                        posts = [...posts, record];
-                    else
-                        posts = [record,...posts];
-                }
-                if (action === 'delete') {
-                    posts = posts.filter((p:any) => p.id !== record.id);
-                }
-                if (action === 'update') {
-                    const index = posts.findIndex((p:any) => p.id === record.id);
-                    if (index >= 0) {
-                        posts[index] = record;
-                    }
-                }
-            }, {expand: 'author,topic,likes_via_post'});
-
-        topic.subscribe(async (value) => {
-            await loadPosts();
-            loadMoreButton.style.display = 'block';
-        });
-    });
-
-    order.subscribe(()=>{
-        loadPosts();
-        })
-
-    function getSort() {
-        if ($order === 'newest') {
-            return '-created';
+    function handleScroll() {
+        // Load more posts when the user scrolls to the bottom of the page
+        // print all the values needed to debug
+        if (document.documentElement.scrollHeight - document.documentElement.scrollTop - document.documentElement.clientHeight <= SCROLL_TRIGGER_DISTANCE) {
+            loadMorePosts();
+            console.log("Infinite Scroll Triggered");
         }
-        if ($order === 'oldest') {
-            return 'created';
-        }
-        if ($order === 'random') {
-            return '@random';
-        }
-        return '-created';
-    }
-
-    async function loadPosts() {
-        console.log('loading posts', $topic);
-        if(loadMoreButton)
-            loadMoreButton.style.display = 'block';
-        let sort = getSort();
-        page = 1;
-        if ($topic == "all"){
-            const resultList = await pb.collection("posts").getList(1,AMOUNT_PER_LOAD,
-                {sort: sort,expand: 'author,topic,likes_via_post'})
-            posts = resultList.items;
-        }else{
-            const resultList = await pb.collection("posts").getList(1,AMOUNT_PER_LOAD,
-                {sort: sort,expand: 'author,topic,likes_via_post', filter: pb.filter('topic = {:topic}', {topic: $topic})})
-            posts = resultList.items;
-        }
-    }
-
-    async function loadMorePosts() {
-        let resultList;
-        let sort = getSort();
-        if ($topic == "all") {
-            resultList = await pb.collection("posts").getList(page + 1, AMOUNT_PER_LOAD,
-                {sort: sort, expand: 'author,topic,likes_via_post'})
-        }else{
-            resultList = await pb.collection("posts").getList(page + 1, AMOUNT_PER_LOAD,
-                {sort: sort, expand: 'author,topic,likes_via_post', filter: pb.filter('topic = {:topic}', {topic: $topic})})
-        }
-        page++;
-        if (resultList.items.length <= 0) {
-            loadMoreButton.style.display = 'none';
-        }
-        // remove duplicates from resultList.items
-        resultList.items = resultList.items.filter((item:any) => !posts.some((post:any) => post.id === item.id));
-        posts = [...posts, ...resultList.items];
-    }
-
-    // Unsubscribe from realtime messages
-    onDestroy(() => {
-        unsubscribe?.();
-    });
-
-    function getImageFromImageOrImageURL(post:any) {
-        if(post.image){
-            return pb.files.getUrl(post,post.image,{'thumb': '500x0'});
-        }else if(post.image_url){
-            return post.image_url;
-        }else{
-            return null;
-        }
-    }
-
-    function fixAvatar(author: any) {
-        if (author.avatar && !author.avatar.startsWith('https:')) {
-            try {
-                author.avatar=pb.files.getUrl(author, author.avatar, {'thumb': '100x100'});
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        return author;
     }
 
 </script>
-
-<div class="gap-5 flex-col flex w-full md:w-3/4 lg:w-5/12 px-4 md:px-0">
+<svelte:window on:scroll={handleScroll} />
+<div class="gap-5 flex-col flex w-full md:w-3/4 lg:w-5/12 px-4 md:px-0" >
     <CreateCard/>
-    <div class=" flex justify-between overflow-clip">
-        <div class="flex flex-col justify-center grow pr-4">
+    <div class=" flex justify-between">
+        <div class="flex flex-row w-2/3 border rounded-xl dark:border-slate-500 dark:bg-slate-600 dark:text-slate-200 dark:placeholder-slate-100">
+            <input disabled placeholder="Suche" class="line-through grow py-1 outline-none px-3 rounded-l-xl dark:border-slate-500 dark:bg-slate-600 dark:text-slate-200 dark:placeholder-slate-100"/>
+            <button on:click={()=>console.log("Das kommt noch")} class="bg-gray-100 py-1 px-3 rounded-r-xl dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200 hover:dark:bg-slate-800 hover:bg-gray-200">🔍</button>
+        </div>
+        <div class="flex flex-col justify-center grow px-4">
             <hr class="dark:border-slate-500">
         </div>
         <select class="border rounded-xl pl-2 p-1 dark:bg-slate-600 dark:border-slate-500 dark:text-slate-200" id="listOrderSelect" bind:value={$order}>
             <option value="newest" selected>Neueste</option>
+            <option value="liked">Beliebteste</option>
             <option value="oldest">Älteste</option>
-            <option value="random">Zufällig</option>
         </select>
     </div>
-    {#each posts as post (post.id)}
-        <RecommendationCard id={post.id}
-                            author={fixAvatar(post.expand.author)}
-                            title={post.title}
-                            description={post.description}
-                            url={post.url}
-                            image_url={getImageFromImageOrImageURL(post)}
-                            post_topic={post.expand.topic}
-                            created_at={post.created}
-                            updated_at={post.updated}
-                            likes={post.expand.likes_via_post?post.expand.likes_via_post:[]}
-        />
+    {#each $posts as post (post.id)}
+        <RecommendationCard post={post}/>
     {/each}
     <!-- Load more button -->
     <div class="flex justify-center">

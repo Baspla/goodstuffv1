@@ -3,14 +3,24 @@ import Login from "./lib/Login.svelte";
 import Title from "./lib/Title.svelte";
 import TopicBar from "./lib/TopicBar.svelte";
 import RecommendationList from "./lib/RecommendationList.svelte";
-import {currentUser} from "./lib/pocketbase";
+import {currentUser, pb} from "./lib/pocketbase";
 import "dayjs/locale/de"; // German locale
 import { dayjs } from "svelte-time";
 import FullScreenImage from "./lib/FullScreenImage.svelte";
+import {onDestroy, onMount} from "svelte";
+import {subscribe, unsubscribe} from "./lib/posts";
 dayjs.locale("de");
 
+onMount(() => {
+    subscribe();
+});
+
+onDestroy(() => {
+    unsubscribe();
+});
 
 </script>
+
 <FullScreenImage/>
 <div class="flex p-2 justify-between border-b flex-col sm:flex-row gap-2 bg-white dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700">
     <Title text="Goodstuff"/>

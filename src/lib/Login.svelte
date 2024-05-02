@@ -2,7 +2,11 @@
     import {currentUser, pb} from "./pocketbase";
 
     async function login() {
-        await pb.collection("users").authWithOAuth2({provider:"discord",scopes: ["identify"]});
+        await pb.collection("users").authWithOAuth2({provider:"discord",scopes: ["identify","guilds"]});
+        if(!pb.authStore.isAuthRecord){
+            pb.authStore.clear();
+            alert('Du bist nicht Teil der Gnag! Du musst auf dem richtigen Discord Server sein um die App nutzen zu können.')
+        }
     }
     async function logout() {
         pb.authStore.clear();
