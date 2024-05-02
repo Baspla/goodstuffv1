@@ -13,7 +13,7 @@
 
     let loadMoreButton: any;
 
-    let page = 0;
+    let page = 1;
 
     onMount(async () =>{
         loadMoreButton = document.getElementById('loadMore');
@@ -69,7 +69,7 @@
         if(loadMoreButton)
             loadMoreButton.style.display = 'block';
         let sort = getSort();
-        page = 0;
+        page = 1;
         if ($topic == "all"){
             const resultList = await pb.collection("posts").getList(1,AMOUNT_PER_LOAD,
                 {sort: sort,expand: 'author,topic,likes_via_post'})
@@ -92,12 +92,12 @@
                 {sort: sort, expand: 'author,topic,likes_via_post', filter: pb.filter('topic = {:topic}', {topic: $topic})})
         }
         page++;
-        // remove duplicates from resultList.items
-        resultList.items = resultList.items.filter((item:any) => !posts.some((post:any) => post.id === item.id));
-        posts = [...posts, ...resultList.items];
         if (resultList.items.length <= 0) {
             loadMoreButton.style.display = 'none';
         }
+        // remove duplicates from resultList.items
+        resultList.items = resultList.items.filter((item:any) => !posts.some((post:any) => post.id === item.id));
+        posts = [...posts, ...resultList.items];
     }
 
     // Unsubscribe from realtime messages

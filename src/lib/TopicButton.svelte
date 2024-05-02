@@ -21,11 +21,11 @@
 </script>
 
 {#if topic_id == $topic}
-    <button on:click={handleClick} style:background-color="#{color_code}" class="flex-none snap-center rounded-lg px-2 py-0.5 mx-2 {text_color} shadow-md shadow-slate-500 dark:shadow-gray-400">
+    <button on:click={handleClick} style:background-color="#{color_code}" class="flex-none snap-center rounded-lg px-2 pt-0.5 pb-1 mx-2 {text_color} shadow-md shadow-slate-500 dark:shadow-gray-400">
         {name}
     </button>
 {:else}
-    <button on:click={handleClick} style:background-color="#{color_code}"  class="brightness-90 flex-none snap-center rounded-lg px-2 py-0.5 mx-2 {text_color} shadow-sm shadow-slate-300 dark:shadow-slate-800">
+    <button on:click={handleClick} style:background-color="#{color_code}"  class="items-center brightness-90 flex-none snap-center rounded-lg px-2 pt-0.5 pb-1 mx-2 {text_color} shadow-sm shadow-slate-300 dark:shadow-slate-800">
         {name}
     </button>
 {/if}
