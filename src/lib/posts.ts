@@ -1,6 +1,6 @@
 import {onDestroy, onMount} from "svelte";
 import {currentUser, pb} from "./pocketbase";
-import {order, topic} from "./stores";
+import {order, search, topic} from "./stores";
 import {get, writable} from "svelte/store";
 import {fixPost, postFilterMatches} from "./utils";
 
@@ -12,6 +12,7 @@ let postSubscription: () => void;
 let topicSubscription: () => void;
 let orderSubscription: () => void;
 let authSubscription: () => void;
+let searchSubscription: () => void;
 
 const BUFFER_TIME = 1000;
 
@@ -68,6 +69,10 @@ export async function subscribe() {
         console.log('user changed');
         await loadPosts();
     });
+    searchSubscription = search.subscribe(async (value) => {
+        console.log('search changed');
+        await loadPosts();
+    });
 }
 
 
@@ -82,7 +87,9 @@ async function loadPosts(offset: number = 0) {
     if(topic) {
         query['topic'] = get(topic);
     }
-
+    if(search) {
+        query['search'] = get(search);
+    }
     switch(get(order)) {
         case 'newest':
             query['sort'] = 'created';
@@ -135,4 +142,5 @@ export function unsubscribe() {
     topicSubscription?.();
     orderSubscription?.();
     authSubscription?.();
+    searchSubscription?.();
 }

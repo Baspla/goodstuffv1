@@ -3,8 +3,13 @@ import {writable} from "svelte/store";
 export const topic = writable( localStorage.getItem("topic")||"all")
 export const topic_name = writable(localStorage.getItem("topic_name")||"Alles")
 export const topic_color = writable(localStorage.getItem("topic_color")||"#DDDDDD")
+export const search = writable(localStorage.getItem("search")||"")
 export const order = writable(localStorage.getItem("order")||"newest")
 export const fullscreenImage = writable(localStorage.getItem("fullscreenImage")||"")
+
+search.subscribe(value => {
+    localStorage.setItem("search", value)
+})
 
 topic.subscribe(value => {
     localStorage.setItem("topic", value)

@@ -148,7 +148,7 @@
             {#if !editMode}
                 <h1 class="px-4 py-2 text-2xl dark:text-slate-100">{post.title}</h1>
                 {#if post.description}
-                    <p class="px-4 text-gray-600 dark:text-slate-200 pb-2">{post.description}</p>
+                    <p class="px-4 text-gray-600 dark:text-slate-200 pb-2 whitespace-pre-line">{post.description}</p>
                 {/if}
                 {#if post.image_url}
                     <div class="flex flex-row justify-center dark:text-slate-200">
