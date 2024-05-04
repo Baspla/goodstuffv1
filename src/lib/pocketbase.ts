@@ -1,4 +1,4 @@
-import PocketBase, {cookieSerialize} from 'pocketbase';
+import PocketBase from 'pocketbase';
 
 import {writable} from "svelte/store";
 
@@ -8,7 +8,7 @@ export const pb = new PocketBase('https://goodstuff.timmorgner.de');
 
 export const currentUser = writable(pb.authStore.model)
 
-pb.authStore.onChange((auth) => {
+pb.authStore.onChange(() => {
     console.log('auth changed')
     currentUser.set(pb.authStore.model)
 })

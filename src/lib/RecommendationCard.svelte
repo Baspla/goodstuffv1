@@ -1,11 +1,9 @@
 <script lang="ts">
     import {currentUser, pb} from "./pocketbase";
-    import {topic, fullscreenImage, topic_color} from "./stores";
+    import {topic, fullscreenImage} from "./stores";
     import Time from "svelte-time";
     import {getTextColor} from "./colors";
-    import {beforeUpdate} from "svelte";
     import { limitStr, trimProtocol} from "./utils";
-    import {posts} from "./posts";
 
     export let post: any;
 

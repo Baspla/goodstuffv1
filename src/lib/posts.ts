@@ -1,4 +1,3 @@
-import {onDestroy, onMount} from "svelte";
 import {currentUser, pb} from "./pocketbase";
 import {order, search, topic} from "./stores";
 import {get, writable} from "svelte/store";
@@ -57,7 +56,7 @@ export async function subscribe() {
                     break;
             }
         }, {expand: 'author,topic,likes_via_post'});
-    topicSubscription = topic.subscribe(async (value) => {
+    topicSubscription = topic.subscribe(async () => {
         console.log('topic changed');
         await loadPosts();
     });
@@ -65,11 +64,11 @@ export async function subscribe() {
         console.log('order changed');
         await loadPosts();
     })
-    authSubscription = currentUser.subscribe(async (value) => {
+    authSubscription = currentUser.subscribe(async () => {
         console.log('user changed');
         await loadPosts();
     });
-    searchSubscription = search.subscribe(async (value) => {
+    searchSubscription = search.subscribe(async () => {
         console.log('search changed');
         await loadPosts();
     });
@@ -123,7 +122,7 @@ async function loadPosts(offset: number = 0) {
                 reachedEnd = false;
             }
         }
-    ).catch((e)=>{});
+    ).catch(()=>{});
 }
 
 let lastUpdate = Date.now();

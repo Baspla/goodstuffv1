@@ -1,12 +1,9 @@
 <script lang="ts">
     import RecommendationCard from "./RecommendationCard.svelte";
-    import {order, search, topic} from "./stores";
+    import {order, search} from "./stores";
     import CreateCard from "./CreateCard.svelte";
     import {loadMorePosts, posts} from "./posts";
     import {onMount} from "svelte";
-
-    const SCROLL_TRIGGER_DISTANCE = 300;
-
     function handleScroll() {
         // Load more posts when the user scrolls to the bottom of the page
         // print all the values needed to debug

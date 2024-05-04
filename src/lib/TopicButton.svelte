@@ -1,7 +1,6 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
     import {topic,topic_name,topic_color} from "./stores";
-    import {getTextColor, hexToRgb, maxContrast} from "./colors";
+    import {getTextColor} from "./colors";
 
     export let name:string;
     export let color_code:string;
@@ -20,7 +19,7 @@
     //style:filter="grayscale(30%)"
 </script>
 
-{#if topic_id == $topic}
+{#if topic_id === $topic}
     <button on:click={handleClick} style:background-color="#{color_code}" class="flex-none snap-center rounded-lg px-2 pt-0.5 pb-1 mx-2 {text_color} shadow-md shadow-slate-500 dark:shadow-gray-400">
         {name}
     </button>

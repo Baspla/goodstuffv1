@@ -1,4 +1,4 @@
-import {currentUser, pb} from "./pocketbase";
+import {currentUser} from "./pocketbase";
 import {get} from "svelte/store";
 import {topic} from "./stores";
 
@@ -15,7 +15,7 @@ export function fixPost(toFix: any) {
             }
         });
     }
-    let fixed = {
+    return {
         created: toFix.created,
         updated: toFix.updated,
         id: toFix.id,
@@ -37,20 +37,8 @@ export function fixPost(toFix: any) {
             color_code: toFix.expand.topic.color_code
         }
 
-    }
-    return fixed;
+    };
 }
-
-export function getImageFromImageOrImageURL(post:any) {
-    if(post.image){
-        return pb.files.getUrl(post,post.image,{'thumb': '500x0'});
-    }else if(post.image_url){
-        return post.image_url;
-    }else{
-        return null;
-    }
-}
-
 export function trimProtocol(url: string) {
     return url.replace(/(^\w+:|^)\/\//, '');
 }

@@ -4,7 +4,8 @@
     import {topic, topic_color, topic_name} from "./stores";
     import {getTextColor} from "./colors";
 
-    async function createPost() {
+    async function createPost()
+    {
         const titleElement = document.getElementById('createPostTitle')!;
         const descriptionElement = document.getElementById('createPostDescription')!;
         const linkElement = document.getElementById('createPostURL')!;
@@ -27,22 +28,23 @@
         }
         if (imageLinkValue) {
             data['image_url'] = imageLinkValue.trim();
-        //}else if (eimage.files.length>0) {
-        //    data['image'] = eimage.files[0];
+            //}else if (eimage.files.length>0) {
+            //    data['image'] = eimage.files[0];
         }
         try{
-        let response = await pb.collection('posts').create(data)
-        titleElement.value = '';
-        descriptionElement.value = '';
-        linkElement.value = '';
-        imageLinkElement.value = '';
-        updateImagePreview();
-        //eimage.value = '';
+            await pb.collection('posts').create(data);
+            titleElement.value = '';
+            descriptionElement.value = '';
+            linkElement.value = '';
+            imageLinkElement.value = '';
+            updateImagePreview();
+            //eimage.value = '';
         }catch(e){
             console.error(e);
             alert('Konnte die Recommendation nicht erstellen. Überprüfe ob du einen Titel hast und keine ungültige URL eingegeben hast.')
         }
     }
+
 
     async function resolveLinkPreview() {
         const eurl = document.getElementById('createPostURL')!;
@@ -97,7 +99,7 @@
                     <!--<div class="flex flex-col justify-center mb-2"><p>oder</p></div>
                     <input id="createPostImage" accept="image/png, image/jpeg, image/webp, image/gif" type="file" class="w-full border rounded-xl p-2 mb-2">-->
                 </div>
-                <img id="createPostImagePreview" alt="Ungültige Bild URL" class="px-2 py-1 h-max object-contain max-h-96 dark:text-slate-200" hidden />
+                <img src="" id="createPostImagePreview" alt="Ungültige Bild URL" class="px-2 py-1 h-max object-contain max-h-96 dark:text-slate-200" hidden />
                 <button on:click={createPost} class="w-full border rounded-xl p-2 dark:border-slate-500 bg-blue-500 {getTextColor($topic_color)}" style:background-color="#{$topic_color}">Empfehlung erstellen</button>
             </div>
         </details>
