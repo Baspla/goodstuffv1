@@ -25,6 +25,8 @@
         console.log("Updated searchterm to: " + searchterm);
         if (searchterm)
             search.set(searchterm);
+        else
+            search.set("");
     }
 
     function clearSearchterm() {
