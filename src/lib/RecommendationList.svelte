@@ -4,6 +4,7 @@
     import CreateCard from "./CreateCard.svelte";
     import {loadMorePosts, posts} from "./posts";
     import {onMount} from "svelte";
+    import {pb} from "./pocketbase";
     function handleScroll() {
         // Load more posts when the user scrolls to the bottom of the page
         // print all the values needed to debug
@@ -51,10 +52,13 @@
         });
     });
 
-    function clipboardRSS() {
-        if($topic !== "feed" && $topic !== "mine") {
-            navigator.clipboard.writeText("https://goodstuff.timmorgner.de/api/rss/ea17ff51-3712-4217-9ed7-1ce1c6a6a5e2/" + $topic);
-            alert("RSS Feed Link wurde in die Zwischenablage kopiert!")
+    async function clipboardRSS() {
+        if ($topic !== "feed" && $topic !== "mine") {
+            pb.send('/api/rss', {method: 'GET'}).then((response) => {
+                const baseRSSURL = response.url;
+                navigator.clipboard.writeText(baseRSSURL + $topic);
+                alert("RSS Feed Link wurde in die Zwischenablage kopiert!")
+            });
         }
     }
 
