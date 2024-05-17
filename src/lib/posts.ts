@@ -1,5 +1,5 @@
 import {currentUser, pb} from "./pocketbase";
-import {order, search, topic} from "./stores";
+import {order, search, topic, feed} from "./stores";
 import {get, writable} from "svelte/store";
 import {fixPost, postFilterMatches} from "./utils";
 
@@ -75,6 +75,13 @@ export async function subscribe() {
 }
 
 
+function feedToTopics(feedlist: any) {
+    let topics= ""; // list of topics separated by | like "topic1|topic2|topic3"
+    for(let feed of feedlist) {
+        topics+=feed.topics.join('|');
+    }
+    return topics;
+}
 
 async function loadPosts(offset: number = 0) {
     lastUpdate = Date.now();
@@ -84,7 +91,11 @@ async function loadPosts(offset: number = 0) {
         user: get(currentUser)?.id
     }
     if(topic) {
-        query['topic'] = get(topic);
+        if(get(topic)==='feed'){
+            query['topic']=feedToTopics(get(feed))
+        }else{
+            query['topic'] = get(topic);
+        }
     }
     if(search) {
         query['search'] = get(search);
