@@ -61,7 +61,7 @@
         const eurl = document.getElementById('editPostURL' + post.id)!;
         const durl = eurl!.value;
         if (durl) {
-            pb.send('/api/urlPreview?url=' + durl,{}).then(async (data) => {
+            pb.send('/api/v1/urlPreview?url=' + durl,{}).then(async (data) => {
                 const etitle = document.getElementById('editPostTitle' + post.id)!;
                 const edescription = document.getElementById('editPostDescription' + post.id)!;
                 const eimageurl = document.getElementById('editPostImageURL' + post.id)!;

@@ -54,7 +54,7 @@
 
     async function clipboardRSS() {
         if ($topic !== "feed" && $topic !== "mine") {
-            pb.send('/api/rss', {method: 'GET'}).then((response) => {
+            pb.send('/api/v1/rss', {method: 'GET'}).then((response) => {
                 const baseRSSURL = response.url;
                 navigator.clipboard.writeText(baseRSSURL + $topic);
                 alert("RSS Feed Link wurde in die Zwischenablage kopiert!")

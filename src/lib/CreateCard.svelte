@@ -50,7 +50,7 @@
         const eurl = document.getElementById('createPostURL')!;
         const durl = eurl!.value;
         if (durl) {
-            pb.send('/api/urlPreview?url=' + durl,{}).then((data) => {
+            pb.send('/api/v1/urlPreview?url=' + durl,{}).then((data) => {
                 const etitle = document.getElementById('createPostTitle')!;
                 const edescription = document.getElementById('createPostDescription')!;
                 const eimageurl = document.getElementById('createPostImageURL')!;

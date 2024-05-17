@@ -114,7 +114,7 @@ async function loadPosts(offset: number = 0) {
             query['order'] = 'desc';
             break;
     }
-    pb.send('/api/posts',{
+    pb.send('/api/v1/posts',{
         method: 'GET',
         query:query})
         .then((data)=>
